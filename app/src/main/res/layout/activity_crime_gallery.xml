@@ -6,4 +6,13 @@
     android:layout_height="match_parent"
     tools:context="com.bignerdranch.android.criminalintent.CrimeGalleryActivity">
 
+    <GridView
+        android:id="@+id/gallery_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="4"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </android.support.constraint.ConstraintLayout>

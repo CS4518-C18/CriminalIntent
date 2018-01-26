@@ -2,12 +2,14 @@ package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -34,6 +36,7 @@ public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
+    public static final String EXTRA_CRIME_ID = "xtra_crime_id";
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
@@ -46,6 +49,7 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckbox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mGalleryButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
 
@@ -160,9 +164,11 @@ public class CrimeFragment extends Fragment {
                 captureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
+        final Uri uri = Uri.fromFile(mPhotoFile);
         if (canTakePhoto) {
-            Uri uri = Uri.fromFile(mPhotoFile);
+            //uri = Uri.fromFile(mPhotoFile);
             captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            ////
         }
 
         mPhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +181,18 @@ public class CrimeFragment extends Fragment {
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         updatePhotoView();
 
+        mGalleryButton = (Button) v.findViewById(R.id.display_gallery);
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String suri = uri.toString();
+                Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
+                //System.out.println(mCrime.getId());
+                System.out.println(suri);
+                intent.putExtra(EXTRA_CRIME_ID, suri);
+                startActivity(intent);
+            }
+        });
         return v;
     }
 
