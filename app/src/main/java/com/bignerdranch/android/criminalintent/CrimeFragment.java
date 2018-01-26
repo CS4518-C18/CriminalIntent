@@ -67,7 +67,7 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
-        mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+        mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime, crimeId);
     }
 
     @Override

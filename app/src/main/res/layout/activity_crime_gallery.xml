@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.bignerdranch.android.criminalintent.CrimeGalleryActivity">
-
+    <ImageView
+        android:id="@+id/img_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
     <GridView
         android:id="@+id/gallery_grid"
         android:layout_width="match_parent"
