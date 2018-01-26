@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\22.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="21.0.0"
+        sha1="80434c45861675a57d690fba5ca31c3d55c89489">
+        <dex dex="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-22.1.0_144f18ab481fe70b9c363c601f4f53027f8d4d09\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="21.0.0"
+        sha1="983e2f375504bc04def18e709c35192afe92e65f">
+        <dex dex="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-22.1.0_5fae55a9873d51493e0952e119907c48a5204ea2\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\emmanuel\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.1.0\support-annotations-22.1.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="21.0.0"
+        sha1="281bc6c58ecb3644c23fbc5ee0452019f67b4d5d">
+        <dex dex="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-22.1.0_e6d0ba3e42d3ea26a1865dfa9b627c95884e65ad\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\jars\libs\internal_impl-22.1.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="21.0.0"
+        sha1="025cb89f2896c63200ff4c2e6c467a95691d880a">
+        <dex dex="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-22.1.0_e46266880dfc843f2d889beb5f834b3289ceb3d0\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="21.0.0"
+        sha1="8cfd91b6e6487778b385dba66fd466e42e0f88c3">
+        <dex dex="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_ea3c02697f698331bcce70b2a93d3a67d1e0ef7e\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="21.0.0"
+        sha1="eeebabdfd8203f6ab639ccea4ffa1f20e1adee3a">
+        <dex dex="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-22.1.0_e49dd063b13ce2f224eb9b16d171c9254d96b990\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="21.0.0"
+        sha1="4264d6a43806be11ace00222b1a67ede63e547dc">
+        <dex dex="C:\temp\android_studio_projects\criminalIntent\16_CameraIntent\CriminalIntent\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_29cb7c02dfee03738750653475e8a7078af7e28d\classes.dex" />
+    </item>
+
+</items>
