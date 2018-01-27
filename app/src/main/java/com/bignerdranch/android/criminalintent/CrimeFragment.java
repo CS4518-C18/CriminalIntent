@@ -67,7 +67,7 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
-        mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime, crimeId);
+        mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
     }
 
     @Override
@@ -166,7 +166,6 @@ public class CrimeFragment extends Fragment {
 
         final Uri uri = Uri.fromFile(mPhotoFile);
         if (canTakePhoto) {
-            //uri = Uri.fromFile(mPhotoFile);
             captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             ////
         }
@@ -187,8 +186,6 @@ public class CrimeFragment extends Fragment {
             public void onClick(View v) {
                 String suri = uri.toString();
                 Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
-                //System.out.println(mCrime.getId());
-                System.out.println(suri);
                 intent.putExtra(EXTRA_CRIME_ID, suri);
                 startActivity(intent);
             }

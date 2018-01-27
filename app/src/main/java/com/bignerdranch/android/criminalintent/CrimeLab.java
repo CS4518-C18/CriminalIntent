@@ -53,7 +53,6 @@ public class CrimeLab {
             cursor.moveToNext();
         }
         cursor.close();
-
         return crimes;
     }
 
@@ -75,15 +74,13 @@ public class CrimeLab {
         }
     }
 
-    public File getPhotoFile(Crime crime, UUID id) {
+    public File getPhotoFile(Crime crime) {
         File externalFilesDir = mContext
                 .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
         if (externalFilesDir == null) {
             return null;
         }
-        File crimeDir = new File(externalFilesDir, id.toString());
-
+        File crimeDir = new File(externalFilesDir, crime.getId().toString());
         return new File(crimeDir, "0.JPG");
     }
 

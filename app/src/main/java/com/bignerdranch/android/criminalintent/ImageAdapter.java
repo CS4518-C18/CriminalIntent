@@ -1,10 +1,17 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+
+import java.io.File;
 
 /**
  * Created by haofanzhang on 1/26/18.
@@ -12,21 +19,36 @@ import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    private File[] images = null;
 
-    public ImageAdapter(Context c) {
+    public ImageAdapter(Context c, String s) {
         mContext = c;
+        Uri u = Uri.parse(s);
+        try {
+            images = new File(u.getPath()).getParentFile().listFiles();
+        } catch (Exception e) {
+            images = null;
+        }
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        if (images != null) {
+            return images.length;
+        } else {
+            return 0;
+        }
     }
 
     public Object getItem(int position) {
-        return null;
+        if (images != null) {
+            return images[position];
+        } else {
+            return 0;
+        }
     }
 
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -34,20 +56,19 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            //imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView = new SquareImageView (mContext);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setPadding(1, 1, 1, 1);
+
         } else {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+        if(images != null && images[position].exists()){
+            Bitmap myBitmap = BitmapFactory.decodeFile(images[position].getAbsolutePath());
+            imageView.setImageBitmap(myBitmap);
+        }
+
         return imageView;
     }
-
-    // references to our images
-    private Integer[] mThumbIds = {
-
-    };
 }
