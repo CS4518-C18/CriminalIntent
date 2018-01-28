@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,10 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         if(images != null && images[position].exists()){
-            Bitmap myBitmap = BitmapFactory.decodeFile(images[position].getAbsolutePath());
+            //Bitmap myBitmap = BitmapFactory.decodeFile(images[position].getAbsolutePath());
+            final int THUMBSIZE = 400;
+            Bitmap myBitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(images[position].getAbsolutePath()),
+                    THUMBSIZE, THUMBSIZE);
             imageView.setImageBitmap(myBitmap);
         }
 

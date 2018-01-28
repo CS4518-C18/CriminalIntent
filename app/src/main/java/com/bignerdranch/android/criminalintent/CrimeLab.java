@@ -92,6 +92,8 @@ public class CrimeLab {
         return mainImage;
     }
 
+
+
     public void updateCrime(Crime crime) {
         String uuidString = crime.getId().toString();
         ContentValues values = getContentValues(crime);
