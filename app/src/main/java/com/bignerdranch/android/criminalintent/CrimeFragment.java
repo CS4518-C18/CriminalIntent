@@ -63,9 +63,22 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        /*
+        if (isVisibleToUser) {
+            UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+            mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+            mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+        }
+        */
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+        //System.out.println(crimeId.toString());
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
     }

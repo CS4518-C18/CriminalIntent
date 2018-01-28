@@ -81,7 +81,15 @@ public class CrimeLab {
             return null;
         }
         File crimeDir = new File(externalFilesDir, crime.getId().toString());
-        return new File(crimeDir, "0.JPG");
+        int num_files;
+        try {
+            num_files = crimeDir.listFiles().length;
+        } catch (NullPointerException e) {
+            num_files = 0;
+        }
+        File mainImage = new File(crimeDir, num_files + ".JPG");
+        //System.out.println(mainImage.getPath().toString());
+        return mainImage;
     }
 
     public void updateCrime(Crime crime) {
