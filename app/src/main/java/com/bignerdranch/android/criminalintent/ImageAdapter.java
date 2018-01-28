@@ -26,7 +26,7 @@ public class ImageAdapter extends BaseAdapter {
         Uri u = Uri.parse(s);
         try {
             images = new File(u.getPath()).getParentFile().listFiles();
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             images = null;
         }
     }
