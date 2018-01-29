@@ -104,6 +104,15 @@ public class CrimeLab {
         return nextImage;
     }
 
+    public File getCrimeDirectory (Crime crime) {
+        File externalFilesDir = mContext
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (externalFilesDir == null) {
+            return null;
+        }
+        File crimeDir = new File(externalFilesDir, crime.getId().toString());
+        return crimeDir;
+    }
 
     public void updateCrime(Crime crime) {
         String uuidString = crime.getId().toString();

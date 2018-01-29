@@ -1,6 +1,5 @@
 package com.bignerdranch.android.criminalintent;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +8,6 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -24,9 +22,9 @@ public class ImageAdapter extends BaseAdapter {
 
     public ImageAdapter(Context c, String s) {
         mContext = c;
-        Uri u = Uri.parse(s);
+        Uri uri = Uri.parse(s);
         try {
-            images = new File(u.getPath()).getParentFile().listFiles();
+            images = new File(uri.getPath()).listFiles();
         } catch (NullPointerException e) {
             images = null;
         }
