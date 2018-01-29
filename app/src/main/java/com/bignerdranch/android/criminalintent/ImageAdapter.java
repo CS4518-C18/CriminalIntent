@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 
 /**
@@ -64,7 +66,12 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         if(images != null && images[position].exists()){
-            imageView.setImageBitmap(ImageLab.getThumbnail(images[position]));
+            Picasso.with(mContext)
+                    .load(images[position])
+                    .resize(400, 400)
+                    .centerInside()
+                    .into(imageView);
+            //imageView.setImageBitmap(ImageLab.getThumbnail(images[position]));
         }
 
         return imageView;

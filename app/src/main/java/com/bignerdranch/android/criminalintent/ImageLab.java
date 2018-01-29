@@ -15,15 +15,17 @@ import java.io.IOException;
 
 public class ImageLab {
     public static Bitmap getThumbnail(File mPhotoFile) {
-        final int THUMBSIZE = 400;
+        final int THUMBSIZE = 200;
         Bitmap myBitmap = ThumbnailUtils.extractThumbnail(
                 BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath()),
                 THUMBSIZE, THUMBSIZE);
+        /*
         try {
             myBitmap = ImageLab.modifyOrientation(myBitmap, mPhotoFile.getAbsolutePath());
         } catch (IOException e) {
             System.out.println("unable to read image file or EXIF info");
         }
+        */
         return myBitmap;
     }
 

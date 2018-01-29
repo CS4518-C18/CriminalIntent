@@ -33,6 +33,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -203,6 +205,7 @@ public class CrimeFragment extends Fragment {
         }
 
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        mPhotoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         updatePhotoView();
 
         mGalleryButton = (Button) v.findViewById(R.id.display_gallery);
@@ -291,7 +294,12 @@ public class CrimeFragment extends Fragment {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {
-            mPhotoView.setImageBitmap(ImageLab.getThumbnail(mPhotoFile));
+            Picasso.with(getActivity())
+                    .load(mPhotoFile)
+                    .resize(400, 400)
+                    .centerInside()
+                    .into(mPhotoView);
+            //mPhotoView.setImageBitmap(ImageLab.getThumbnail(mPhotoFile));
         }
     }
 }
