@@ -64,11 +64,7 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         if(images != null && images[position].exists()){
-            //Bitmap myBitmap = BitmapFactory.decodeFile(images[position].getAbsolutePath());
-            final int THUMBSIZE = 400;
-            Bitmap myBitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(images[position].getAbsolutePath()),
-                    THUMBSIZE, THUMBSIZE);
-            imageView.setImageBitmap(myBitmap);
+            imageView.setImageBitmap(ImageLab.getThumbnail(images[position]));
         }
 
         return imageView;
