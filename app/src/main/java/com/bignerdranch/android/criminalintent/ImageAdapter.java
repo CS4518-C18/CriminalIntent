@@ -1,9 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.bignerdranch.android.criminalintent.Utilities.setImage;
@@ -47,7 +43,7 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
-            imageView = new SquareImageView (mContext);
+            imageView = new SquareImageView(mContext);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         } else {

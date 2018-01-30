@@ -1,20 +1,14 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -37,7 +31,7 @@ public class Utilities {
 
         File profileDir = new File(externalFilesDir, crimeID);
 
-        if(!profileDir.exists())
+        if (!profileDir.exists())
             profileDir.mkdirs();
 
         return profileDir;
@@ -46,7 +40,7 @@ public class Utilities {
     static File createNewProfile(Context context, Crime crime) {
         File profileDir = getProfileDir(context, crime.getId().toString());
 
-        if(profileDir == null) return null;
+        if (profileDir == null) return null;
 
         File[] profiles = profileDir.listFiles();
         int num_profiles = 0;
@@ -61,7 +55,7 @@ public class Utilities {
 
         File profileDir = getProfileDir(context, crimeID);
 
-        if(profileDir == null) return null;
+        if (profileDir == null) return null;
 
         File[] profiles = profileDir.listFiles();
 
@@ -75,7 +69,7 @@ public class Utilities {
             Log.d("getProfileUris", filename);
             profileNames.add(filename);
         }
-       return profileNames;
+        return profileNames;
     }
 
     static void setImage(Context context, Uri imageUri, ImageView imageView) {

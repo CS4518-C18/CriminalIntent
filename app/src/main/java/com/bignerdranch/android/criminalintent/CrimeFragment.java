@@ -17,7 +17,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,26 +28,20 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-
 import java.io.File;
 import java.util.Date;
 import java.util.UUID;
-
-import jp.wasabeef.picasso.transformations.CropSquareTransformation;
 
 import static com.bignerdranch.android.criminalintent.Utilities.setImage;
 
 public class CrimeFragment extends Fragment {
 
+    public static final String EXTRA_CRIME_ID = "xtra_crime_id";
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
-    public static final String EXTRA_CRIME_ID = "xtra_crime_id";
-
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
-    private static final int REQUEST_PHOTO= 2;
+    private static final int REQUEST_PHOTO = 2;
     private static final int PROFILE_WIDTH = 300;
 
     private Crime mCrime;
@@ -148,7 +141,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        mReportButton = (Button)v.findViewById(R.id.crime_report);
+        mReportButton = (Button) v.findViewById(R.id.crime_report);
         mReportButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_SEND);
@@ -164,7 +157,7 @@ public class CrimeFragment extends Fragment {
 
         final Intent pickContact = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
-        mSuspectButton = (Button)v.findViewById(R.id.crime_suspect);
+        mSuspectButton = (Button) v.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivityForResult(pickContact, REQUEST_CONTACT);
@@ -213,7 +206,7 @@ public class CrimeFragment extends Fragment {
 
     private void prepareTakingPhoto() {
         File newProfile = Utilities.createNewProfile(getContext(), mCrime);
-        if(newProfile != null) {
+        if (newProfile != null) {
             mPhotoUri = Uri.fromFile(newProfile);
             mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
         }
@@ -234,7 +227,7 @@ public class CrimeFragment extends Fragment {
             Uri contactUri = data.getData();
             // Specify which fields you want your query to return
             // values for.
-            String[] queryFields = new String[] {
+            String[] queryFields = new String[]{
                     ContactsContract.Contacts.DISPLAY_NAME,
             };
             // Perform your query - the contactUri is like a "where"
@@ -285,7 +278,7 @@ public class CrimeFragment extends Fragment {
         } else {
             suspect = getString(R.string.crime_report_suspect, suspect);
         }
-       return getString(R.string.crime_report,
+        return getString(R.string.crime_report,
                 mCrime.getTitle(), dateString, solvedString, suspect);
     }
 

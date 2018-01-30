@@ -2,7 +2,6 @@ package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
  * Created by haofanzhang on 1/26/18.

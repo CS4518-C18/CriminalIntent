@@ -121,7 +121,7 @@ public class CrimeListFragment extends Fragment {
         updateSubtitle();
     }
 
-    private class CrimeHolder extends RecyclerView.ViewHolder 
+    private class CrimeHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
         private TextView mTitleTextView;

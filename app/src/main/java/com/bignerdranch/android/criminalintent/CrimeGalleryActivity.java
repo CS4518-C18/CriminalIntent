@@ -1,8 +1,8 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.GridView;
 
 import java.util.List;

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
-import android.util.Log;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
 import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
@@ -23,6 +22,12 @@ public class CrimeLab {
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
+    private CrimeLab(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = new CrimeBaseHelper(mContext)
+                .getWritableDatabase();
+    }
+
     public static CrimeLab get(Context context) {
         if (sCrimeLab == null) {
             sCrimeLab = new CrimeLab(context);
@@ -30,12 +35,16 @@ public class CrimeLab {
         return sCrimeLab;
     }
 
-    private CrimeLab(Context context) {
-        mContext = context.getApplicationContext();
-        mDatabase = new CrimeBaseHelper(mContext)
-                .getWritableDatabase();
-    }
+    private static ContentValues getContentValues(Crime crime) {
+        ContentValues values = new ContentValues();
+        values.put(CrimeTable.Cols.UUID, crime.getId().toString());
+        values.put(CrimeTable.Cols.TITLE, crime.getTitle());
+        values.put(CrimeTable.Cols.DATE, crime.getDate().getTime());
+        values.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
+        values.put(CrimeTable.Cols.SUSPECT, crime.getSuspect());
 
+        return values;
+    }
 
     public void addCrime(Crime c) {
         ContentValues values = getContentValues(c);
@@ -79,13 +88,13 @@ public class CrimeLab {
 
         File externalFilesDir = mContext
                 .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        
+
         if (externalFilesDir == null) {
             return null;
         }
         File crimeDir = new File(externalFilesDir, crime.getId().toString());
         File[] profiles = crimeDir.listFiles();
-        if(profiles == null)
+        if (profiles == null)
             return null;
 
         int numProfiles = profiles.length;
@@ -100,17 +109,6 @@ public class CrimeLab {
         mDatabase.update(CrimeTable.NAME, values,
                 CrimeTable.Cols.UUID + " = ?",
                 new String[]{uuidString});
-    }
-
-    private static ContentValues getContentValues(Crime crime) {
-        ContentValues values = new ContentValues();
-        values.put(CrimeTable.Cols.UUID, crime.getId().toString());
-        values.put(CrimeTable.Cols.TITLE, crime.getTitle());
-        values.put(CrimeTable.Cols.DATE, crime.getDate().getTime());
-        values.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
-        values.put(CrimeTable.Cols.SUSPECT, crime.getSuspect());
-
-        return values;
     }
 
     private CrimeCursorWrapper queryCrimes(String whereClause, String[] whereArgs) {
