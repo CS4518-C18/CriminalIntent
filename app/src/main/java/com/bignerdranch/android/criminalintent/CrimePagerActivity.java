@@ -1,6 +1,5 @@
 package com.bignerdranch.android.criminalintent;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Haofan Zhang
+ * @version Jan 30, 2018
+ */
 public class CrimePagerActivity extends AppCompatActivity {
     private static final String EXTRA_CRIME_ID =
             "com.bignerdranch.android.criminalintent.crime_id";
@@ -35,6 +38,7 @@ public class CrimePagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crime_pager);
 
         crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        // get id from saved if cant get from parent
         if (crimeId == null) {
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             String saved_id = sharedPref.getString(SAVE_CRIME_ID, null);
@@ -91,7 +95,7 @@ public class CrimePagerActivity extends AppCompatActivity {
     @Override
     protected void onStop () {
         super.onStop();
-
+        // save id on stop
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(SAVE_CRIME_ID, crimeId.toString());

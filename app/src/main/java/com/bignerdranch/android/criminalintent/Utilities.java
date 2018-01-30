@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -27,6 +26,7 @@ import jp.wasabeef.picasso.transformations.CropSquareTransformation;
 
 /**
  * @author Yang Liu
+ * @author Haofan Zhang
  * @version Jan 29, 2018
  */
 
@@ -93,10 +93,7 @@ public class Utilities {
 
 
     static Bitmap scaleDown(Bitmap image) {
-        final int THUMBSIZE = 500;
-
-        Bitmap newImage = ThumbnailUtils.extractThumbnail(image, THUMBSIZE, THUMBSIZE);
-        //scaleDown(image, 500, 500);
+        Bitmap newImage = scaleDown(image, 500, 500);
         return newImage;
     }
 
