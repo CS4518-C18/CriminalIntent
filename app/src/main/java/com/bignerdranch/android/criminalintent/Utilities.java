@@ -1,6 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -139,5 +140,13 @@ public class Utilities {
                 .setLandmarkType(FaceDetector.FAST_MODE)
                 .setMode(FaceDetector.FAST_MODE)
                 .build();
+    }
+
+    static void updateEnableFaceDetectionPreference(Context context, boolean faceDetectionEnabled) {
+        SharedPreferences preferences = context
+                .getSharedPreferences(context.getString(R.string.crime_preferences_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(context.getString(R.string.enable_face_detection_key), faceDetectionEnabled);
+        editor.apply();
     }
 }

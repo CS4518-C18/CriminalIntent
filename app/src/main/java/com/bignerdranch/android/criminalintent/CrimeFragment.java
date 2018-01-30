@@ -2,7 +2,9 @@ package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -38,6 +40,7 @@ import java.util.UUID;
 import static com.bignerdranch.android.criminalintent.Utilities.detectFaces;
 import static com.bignerdranch.android.criminalintent.Utilities.getFaceDetector;
 import static com.bignerdranch.android.criminalintent.Utilities.scaleDown;
+import static com.bignerdranch.android.criminalintent.Utilities.updateEnableFaceDetectionPreference;
 
 public class CrimeFragment extends Fragment {
 
@@ -237,8 +240,15 @@ public class CrimeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) enableFaceDetection();
                 else disableFaceDetection();
+                updateEnableFaceDetectionPreference(getContext(), faceDetectionEnabled);
             }
         });
+
+        SharedPreferences preferences = getContext()
+                .getSharedPreferences(getString(R.string.crime_preferences_key), Context.MODE_PRIVATE);
+
+        faceDetectionEnabled = preferences.getBoolean(getString(R.string.enable_face_detection_key), false);
+        enableFaceDetectionCheckBox.setChecked(faceDetectionEnabled);
         return v;
     }
 
