@@ -89,6 +89,7 @@ public class CrimeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Bitmap newImage) {
+            mPhotoView.setImageDrawable(null);
             mPhotoView.setImageBitmap(newImage);
         }
     }
@@ -313,6 +314,7 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         } else if (requestCode == REQUEST_PHOTO) {
+            mPhotoFile = new File(mPhotoUri.getPath());
             updatePhotoView();
             prepareTakingPhoto();
         }
