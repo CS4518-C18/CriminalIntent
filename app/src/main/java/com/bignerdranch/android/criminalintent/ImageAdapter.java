@@ -1,16 +1,13 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import java.io.File;
 import java.util.List;
-
-import static com.bignerdranch.android.criminalintent.Utilities.setImage;
 
 /**
  * @author Harry Liu
@@ -19,19 +16,19 @@ import static com.bignerdranch.android.criminalintent.Utilities.setImage;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private List<String> imagePaths;
+    private List<Bitmap> images;
 
-    public ImageAdapter(Context c, List<String> paths) {
+    public ImageAdapter(Context c, List<Bitmap> images) {
         mContext = c;
-        imagePaths = paths;
+        this.images = images;
     }
 
     public int getCount() {
-        return imagePaths.size();
+        return images.size();
     }
 
-    public String getItem(int position) {
-        return imagePaths.get(position);
+    public Bitmap getItem(int position) {
+        return images.get(position);
     }
 
     public long getItemId(int position) {
@@ -50,8 +47,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        File imageFile = new File(getItem(position));
-        setImage(mContext, Uri.fromFile(imageFile), imageView);
+        imageView.setImageBitmap(images.get(position));
         return imageView;
     }
 }

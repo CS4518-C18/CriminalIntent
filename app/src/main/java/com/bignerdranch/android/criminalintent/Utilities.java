@@ -1,11 +1,19 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.ImageView;
 
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -77,7 +85,59 @@ public class Utilities {
         Picasso.with(context)
                 .load(imageUri)
                 .transform(new CropSquareTransformation())
-                .fit()
+//                .resize(300, 300)
                 .into(imageView);
+    }
+
+    static Bitmap scaleDown(Bitmap image) {
+        return scaleDown(image, 500, 500);
+    }
+
+    static Bitmap scaleDown(Bitmap image, int width, int height) {
+        int newWidth = Math.min(image.getWidth(), image.getHeight());
+        image = Bitmap.createBitmap(image, 0, 0, newWidth, newWidth);
+        return Bitmap.createScaledBitmap(image, width, height, false);
+    }
+
+    static void drawFaces(Bitmap image, SparseArray<Face> faces) {
+        Canvas canvas = new Canvas(image);
+
+        Paint paint = new Paint();
+        paint.setColor(Color.GREEN);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(10);
+
+        float left;
+        float top;
+        float right;
+        float bottom;
+
+        for (int i = 0; i < faces.size(); i++) {
+            Face face = faces.valueAt(i);
+
+            left = face.getPosition().x;
+            top = face.getPosition().y;
+            right = left + face.getWidth();
+            bottom = top + face.getHeight();
+
+            canvas.drawRect(left, top, right, bottom, paint);
+        }
+    }
+
+    static Bitmap detectFaces(FaceDetector mFaceDetector, Bitmap image) {
+        Frame frame = new Frame.Builder().setBitmap(image).build();
+        SparseArray<Face> faces = mFaceDetector.detect(frame);
+
+        Bitmap newImage = image.copy(Bitmap.Config.ARGB_8888, true);
+        drawFaces(newImage, faces);
+        return newImage;
+    }
+
+    static FaceDetector getFaceDetector(Context context) {
+        return new FaceDetector.Builder(context)
+                .setTrackingEnabled(false)
+                .setLandmarkType(FaceDetector.FAST_MODE)
+                .setMode(FaceDetector.FAST_MODE)
+                .build();
     }
 }

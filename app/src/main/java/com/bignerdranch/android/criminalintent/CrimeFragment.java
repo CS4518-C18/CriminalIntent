@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -28,15 +29,21 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.google.android.gms.vision.face.FaceDetector;
+
 import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.bignerdranch.android.criminalintent.Utilities.setImage;
+import static com.bignerdranch.android.criminalintent.Utilities.detectFaces;
+import static com.bignerdranch.android.criminalintent.Utilities.getFaceDetector;
+import static com.bignerdranch.android.criminalintent.Utilities.scaleDown;
 
 public class CrimeFragment extends Fragment {
 
     public static final String EXTRA_CRIME_ID = "xtra_crime_id";
+    public static final String EXTRA_FACE_DETECTION_ENABLED = "extra_face_detection_enabled";
+
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
@@ -56,6 +63,32 @@ public class CrimeFragment extends Fragment {
     private ImageView mPhotoView;
     private Intent mCaptureImage;
     private Uri mPhotoUri;
+    private boolean faceDetectionEnabled;
+    private FaceDetector mFaceDetector;
+
+    private class UpdateProfileTask extends AsyncTask<Object, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(Object... values) {
+
+            Uri uri = Uri.fromFile((File) values[0]);
+            Bitmap image = BitmapFactory.decodeFile(uri.getPath());
+
+            Bitmap newImage = scaleDown(image);
+
+            boolean faceDetectionEnabled = (boolean) values[1];
+
+            FaceDetector faceDetector = (FaceDetector) values[2];
+            if (faceDetectionEnabled)
+                newImage = detectFaces(faceDetector, newImage);
+
+            return scaleDown(newImage);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap newImage) {
+            mPhotoView.setImageBitmap(newImage);
+        }
+    }
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -78,6 +111,8 @@ public class CrimeFragment extends Fragment {
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
 
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+
+        mFaceDetector = getFaceDetector(getContext());
     }
 
     @Override
@@ -191,15 +226,16 @@ public class CrimeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
                 intent.putExtra(EXTRA_CRIME_ID, mCrime.getId().toString());
+                intent.putExtra(EXTRA_FACE_DETECTION_ENABLED, faceDetectionEnabled);
                 startActivity(intent);
             }
         });
 
-        CheckBox enablefaceDetectionCheckBox = (CheckBox) v.findViewById(R.id.enable_face_detection_checkbox);
-        enablefaceDetectionCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        CheckBox enableFaceDetectionCheckBox = (CheckBox) v.findViewById(R.id.enable_face_detection_checkbox);
+        enableFaceDetectionCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) enableFaceDetection();
+                if (b) enableFaceDetection();
                 else disableFaceDetection();
             }
         });
@@ -208,10 +244,14 @@ public class CrimeFragment extends Fragment {
 
     private void enableFaceDetection() {
         Log.d("CrimeFragment", "enableFaceDetection");
+        faceDetectionEnabled = true;
+        updatePhotoView();
     }
 
     private void disableFaceDetection() {
         Log.d("CrimeFragment", "disableFaceDetection");
+        faceDetectionEnabled = false;
+        updatePhotoView();
     }
 
     private void prepareTakingPhoto() {
@@ -263,8 +303,7 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         } else if (requestCode == REQUEST_PHOTO) {
-
-            setImage(getContext(), mPhotoUri, mPhotoView);
+            updatePhotoView();
             prepareTakingPhoto();
         }
     }
@@ -293,15 +332,11 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updatePhotoView() {
-        Log.d("updatePhotoView", mPhotoFile + "");
-        if (mPhotoFile != null) {
-            Log.d("updatePhotoView", mPhotoFile.getAbsolutePath());
-        }
+
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {
-            Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath());
-            mPhotoView.setImageBitmap(bitmap);
+            new UpdateProfileTask().execute(mPhotoFile, faceDetectionEnabled, mFaceDetector);
         }
     }
 }

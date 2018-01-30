@@ -115,20 +115,30 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="com.android.support:animated-vector-drawable-25.4.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-vision-common-11.8.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-base-license-11.8.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-vision-common-license-11.8.0" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-ui-25.4.0" level="project" />
-    <orderEntry type="library" name="com.android.support:appcompat-v7-25.4.0" level="project" />
     <orderEntry type="library" name="com.android.support:support-compat-25.4.0" level="project" />
-    <orderEntry type="library" name="com.squareup.picasso:picasso:2.5.2@jar" level="project" />
-    <orderEntry type="library" name="jp.wasabeef:picasso-transformations-2.1.2" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-basement-license-11.8.0" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.0.2@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-annotations:25.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-utils-25.4.0" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:support-v4-25.4.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-vector-drawable-25.4.0" level="project" />
     <orderEntry type="library" name="com.android.support:support-fragment-25.4.0" level="project" />
-    <orderEntry type="library" name="com.android.support:recyclerview-v7-25.4.0" level="project" />
     <orderEntry type="library" name="com.android.support:support-media-compat-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:animated-vector-drawable-25.4.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-basement-11.8.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-tasks-11.8.0" level="project" />
+    <orderEntry type="library" name="com.android.support:appcompat-v7-25.4.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-vision-license-11.8.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-vision-11.8.0" level="project" />
+    <orderEntry type="library" name="com.squareup.picasso:picasso:2.5.2@jar" level="project" />
+    <orderEntry type="library" name="jp.wasabeef:picasso-transformations-2.1.2" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-base-11.8.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-vector-drawable-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:recyclerview-v7-25.4.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-tasks-license-11.8.0" level="project" />
   </component>
 </module>
