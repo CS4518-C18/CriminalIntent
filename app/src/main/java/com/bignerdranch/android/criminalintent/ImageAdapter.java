@@ -8,43 +8,34 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.bignerdranch.android.criminalintent.Utilities.setImage;
 
 /**
- * Created by haofanzhang on 1/26/18.
+ * @author Harry Liu
+ * @version Jan 28, 2018
  */
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private File[] images = null;
+    private List<String> imagePaths;
 
-    public ImageAdapter(Context c, String s) {
+    public ImageAdapter(Context c, List<String> paths) {
         mContext = c;
-        Uri u = Uri.parse(s);
-        try {
-            images = new File(u.getPath()).getParentFile().listFiles();
-        } catch (NullPointerException e) {
-            images = null;
-        }
+        imagePaths = paths;
     }
 
     public int getCount() {
-        if (images != null) {
-            return images.length;
-        } else {
-            return 0;
-        }
+        return imagePaths.size();
     }
 
-    public Object getItem(int position) {
-        if (images != null) {
-            return images[position];
-        } else {
-            return 0;
-        }
+    public String getItem(int position) {
+        return imagePaths.get(position);
     }
 
     public long getItemId(int position) {
@@ -57,18 +48,14 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new SquareImageView (mContext);
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageView.setPadding(1, 1, 1, 1);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         } else {
             imageView = (ImageView) convertView;
         }
 
-        if(images != null && images[position].exists()){
-            Bitmap myBitmap = BitmapFactory.decodeFile(images[position].getAbsolutePath());
-            imageView.setImageBitmap(myBitmap);
-        }
-
+        File imageFile = new File(getItem(position));
+        setImage(mContext, Uri.fromFile(imageFile), imageView);
         return imageView;
     }
 }

@@ -115,18 +115,20 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="com.android.support:support-fragment-25.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-annotations:25.0.0@jar" level="project" />
-    <orderEntry type="library" name="com.android.support:support-core-ui-25.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-core-utils-25.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:appcompat-v7-25.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-media-compat-25.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-compat-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:animated-vector-drawable-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-core-ui-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:appcompat-v7-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-compat-25.4.0" level="project" />
+    <orderEntry type="library" name="com.squareup.picasso:picasso:2.5.2@jar" level="project" />
+    <orderEntry type="library" name="jp.wasabeef:picasso-transformations-2.1.2" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.0.2@jar" level="project" />
-    <orderEntry type="library" name="com.android.support:animated-vector-drawable-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-annotations:25.4.0@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:support-core-utils-25.4.0" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.0.2" level="project" />
-    <orderEntry type="library" name="com.android.support:recyclerview-v7-25.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-vector-drawable-25.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-v4-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-v4-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-vector-drawable-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-fragment-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:recyclerview-v7-25.4.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-media-compat-25.4.0" level="project" />
   </component>
 </module>

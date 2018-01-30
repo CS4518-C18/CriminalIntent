@@ -88,10 +88,8 @@ public class CrimeLab {
         if(profiles == null)
             return null;
 
-        int num_files = profiles.length;
-
-        Log.d(CrimeLab.class.getSimpleName(), num_files + "");
-        String filename = String.format(Locale.getDefault(), "%d.jpg", num_files - 1);
+        int numProfiles = profiles.length;
+        String filename = String.format(Locale.getDefault(), "%d.jpg", numProfiles - 1);
         return new File(crimeDir, filename);
     }
 

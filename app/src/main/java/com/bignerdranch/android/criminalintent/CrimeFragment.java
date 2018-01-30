@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -16,6 +17,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +29,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+
 import java.io.File;
 import java.util.Date;
 import java.util.UUID;
+
+import jp.wasabeef.picasso.transformations.CropSquareTransformation;
+
+import static com.bignerdranch.android.criminalintent.Utilities.setImage;
 
 public class CrimeFragment extends Fragment {
 
@@ -40,6 +49,7 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
     private static final int REQUEST_PHOTO= 2;
+    private static final int PROFILE_WIDTH = 300;
 
     private Crime mCrime;
     private File mPhotoFile;
@@ -174,8 +184,7 @@ public class CrimeFragment extends Fragment {
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
         mCaptureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        boolean canTakePhoto = mPhotoFile != null &&
-                mCaptureImage.resolveActivity(packageManager) != null;
+        boolean canTakePhoto = mCaptureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
         prepareTakingPhoto();
@@ -191,22 +200,23 @@ public class CrimeFragment extends Fragment {
         updatePhotoView();
 
         mGalleryButton = (Button) v.findViewById(R.id.display_gallery);
-//        mGalleryButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String suri = uri.toString();
-//                Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
-//                intent.putExtra(EXTRA_CRIME_ID, suri);
-//                startActivity(intent);
-//            }
-//        });
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
+                intent.putExtra(EXTRA_CRIME_ID, mCrime.getId().toString());
+                startActivity(intent);
+            }
+        });
         return v;
     }
 
     private void prepareTakingPhoto() {
         File newProfile = Utilities.createNewProfile(getContext(), mCrime);
-        mPhotoUri = Uri.fromFile(newProfile);
-        mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
+        if(newProfile != null) {
+            mPhotoUri = Uri.fromFile(newProfile);
+            mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
+        }
     }
 
     @Override
@@ -250,11 +260,8 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         } else if (requestCode == REQUEST_PHOTO) {
-            String filename = mPhotoUri.getPath();
-            mPhotoFile = new File(filename);
-            Log.d("REQUEST_PHOTO", filename);
-            Log.d("REQUEST_PHOTO", mPhotoFile.exists() + "");
-            updatePhotoView();
+
+            setImage(getContext(), mPhotoUri, mPhotoView);
             prepareTakingPhoto();
         }
     }
@@ -278,17 +285,19 @@ public class CrimeFragment extends Fragment {
         } else {
             suspect = getString(R.string.crime_report_suspect, suspect);
         }
-        String report = getString(R.string.crime_report,
+       return getString(R.string.crime_report,
                 mCrime.getTitle(), dateString, solvedString, suspect);
-        return report;
     }
 
     private void updatePhotoView() {
+        Log.d("updatePhotoView", mPhotoFile + "");
+        if (mPhotoFile != null) {
+            Log.d("updatePhotoView", mPhotoFile.getAbsolutePath());
+        }
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(
-                    mPhotoFile.getPath(), getActivity());
+            Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath());
             mPhotoView.setImageBitmap(bitmap);
         }
     }
