@@ -25,4 +25,5 @@
     <string name="send_report">Send crime report via</string>
     <string name="display_gallery">Display Gallery For This Crime</string>
     <string name="gallery_title">Gallery For This Crime</string>
+    <string name="face_detection_checkbox">Enable Face Detection</string>
 </resources>

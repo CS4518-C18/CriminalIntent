@@ -69,13 +69,6 @@ public class CrimeFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        /*
-        if (isVisibleToUser) {
-            UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-            mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
-            mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
-        }
-        */
     }
 
     @Override
@@ -201,7 +194,24 @@ public class CrimeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        CheckBox enablefaceDetectionCheckBox = (CheckBox) v.findViewById(R.id.enable_face_detection_checkbox);
+        enablefaceDetectionCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b) enableFaceDetection();
+                else disableFaceDetection();
+            }
+        });
         return v;
+    }
+
+    private void enableFaceDetection() {
+        Log.d("CrimeFragment", "enableFaceDetection");
+    }
+
+    private void disableFaceDetection() {
+        Log.d("CrimeFragment", "disableFaceDetection");
     }
 
     private void prepareTakingPhoto() {
