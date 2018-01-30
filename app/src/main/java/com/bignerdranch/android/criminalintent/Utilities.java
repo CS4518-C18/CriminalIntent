@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -86,12 +87,17 @@ public class Utilities {
         Picasso.with(context)
                 .load(imageUri)
                 .transform(new CropSquareTransformation())
-//                .resize(300, 300)
+                //.resize(300, 300)
                 .into(imageView);
     }
 
+
     static Bitmap scaleDown(Bitmap image) {
-        return scaleDown(image, 500, 500);
+        final int THUMBSIZE = 500;
+
+        Bitmap newImage = ThumbnailUtils.extractThumbnail(image, THUMBSIZE, THUMBSIZE);
+        //scaleDown(image, 500, 500);
+        return newImage;
     }
 
     static Bitmap scaleDown(Bitmap image, int width, int height) {

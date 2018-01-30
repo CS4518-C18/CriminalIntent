@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import static com.bignerdranch.android.criminalintent.Utilities.scaleDown;
 
 /**
  * @author Harry Liu
+ * @author Haofan Zhang
  * @version Jan 29, 2018
  */
 public class CrimeGalleryActivity extends AppCompatActivity {

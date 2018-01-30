@@ -1,7 +1,9 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,9 +17,11 @@ import java.util.UUID;
 public class CrimePagerActivity extends AppCompatActivity {
     private static final String EXTRA_CRIME_ID =
             "com.bignerdranch.android.criminalintent.crime_id";
+    private static final String SAVE_CRIME_ID = "saved_crime_id";
 
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
+    private UUID crimeId;
 
     public static Intent newIntent(Context packageContext, UUID crimeId) {
         Intent intent = new Intent(packageContext, CrimePagerActivity.class);
@@ -30,8 +34,14 @@ public class CrimePagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_pager);
 
-        UUID crimeId = (UUID) getIntent()
-                .getSerializableExtra(EXTRA_CRIME_ID);
+        crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        if (crimeId == null) {
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            String saved_id = sharedPref.getString(SAVE_CRIME_ID, null);
+            if (saved_id != null) {
+                crimeId = UUID.fromString(sharedPref.getString(SAVE_CRIME_ID, null));
+            }
+        }
 
         mViewPager = (ViewPager) findViewById(R.id.activity_crime_pager_view_pager);
 
@@ -75,5 +85,17 @@ public class CrimePagerActivity extends AppCompatActivity {
                 break;
             }
         }
+
     }
+
+    @Override
+    protected void onStop () {
+        super.onStop();
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(SAVE_CRIME_ID, crimeId.toString());
+        editor.commit();
+    }
+
 }

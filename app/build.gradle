@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-
     defaultConfig {
         applicationId "com.bignerdranch.android.criminalintent"
         minSdkVersion 16
@@ -13,15 +12,19 @@ android {
     buildTypes {
 
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:support-v4:25.4.0'
     implementation 'com.android.support:recyclerview-v7:25.4.0'
     implementation 'com.android.support:appcompat-v7:25.4.0'
-    implementation group:'com.squareup.picasso', name:'picasso', version:'2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'jp.wasabeef:picasso-transformations:2.1.2'
     implementation 'com.google.android.gms:play-services-vision:11.8.0'
 }
