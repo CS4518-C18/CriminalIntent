@@ -5,15 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.util.Log;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
 import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
-
 import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class CrimeLab {
@@ -59,7 +60,7 @@ public class CrimeLab {
     public Crime getCrime(UUID id) {
         CrimeCursorWrapper cursor = queryCrimes(
                 CrimeTable.Cols.UUID + " = ?",
-                new String[] { id.toString() }
+                new String[]{id.toString()}
         );
 
         try {
@@ -75,21 +76,23 @@ public class CrimeLab {
     }
 
     public File getPhotoFile(Crime crime) {
+
         File externalFilesDir = mContext
                 .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        
         if (externalFilesDir == null) {
             return null;
         }
         File crimeDir = new File(externalFilesDir, crime.getId().toString());
-        int num_files;
-        try {
-            num_files = crimeDir.listFiles().length;
-        } catch (NullPointerException e) {
-            num_files = 0;
-        }
-        File mainImage = new File(crimeDir, num_files + ".JPG");
-        //System.out.println(mainImage.getPath().toString());
-        return mainImage;
+        File[] profiles = crimeDir.listFiles();
+        if(profiles == null)
+            return null;
+
+        int num_files = profiles.length;
+
+        Log.d(CrimeLab.class.getSimpleName(), num_files + "");
+        String filename = String.format(Locale.getDefault(), "%d.jpg", num_files - 1);
+        return new File(crimeDir, filename);
     }
 
     public void updateCrime(Crime crime) {
@@ -98,7 +101,7 @@ public class CrimeLab {
 
         mDatabase.update(CrimeTable.NAME, values,
                 CrimeTable.Cols.UUID + " = ?",
-                new String[] { uuidString });
+                new String[]{uuidString});
     }
 
     private static ContentValues getContentValues(Crime crime) {

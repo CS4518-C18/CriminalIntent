@@ -2,14 +2,12 @@ package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -17,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +51,8 @@ public class CrimeFragment extends Fragment {
     private Button mGalleryButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Intent mCaptureImage;
+    private Uri mPhotoUri;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -78,8 +79,8 @@ public class CrimeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-        //System.out.println(crimeId.toString());
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
     }
 
@@ -171,22 +172,18 @@ public class CrimeFragment extends Fragment {
         }
 
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
-        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mCaptureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         boolean canTakePhoto = mPhotoFile != null &&
-                captureImage.resolveActivity(packageManager) != null;
+                mCaptureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
-        final Uri uri = Uri.fromFile(mPhotoFile);
-        if (canTakePhoto) {
-            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            ////
-        }
+        prepareTakingPhoto();
 
         mPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(captureImage, REQUEST_PHOTO);
+                startActivityForResult(mCaptureImage, REQUEST_PHOTO);
             }
         });
 
@@ -194,16 +191,22 @@ public class CrimeFragment extends Fragment {
         updatePhotoView();
 
         mGalleryButton = (Button) v.findViewById(R.id.display_gallery);
-        mGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String suri = uri.toString();
-                Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
-                intent.putExtra(EXTRA_CRIME_ID, suri);
-                startActivity(intent);
-            }
-        });
+//        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String suri = uri.toString();
+//                Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
+//                intent.putExtra(EXTRA_CRIME_ID, suri);
+//                startActivity(intent);
+//            }
+//        });
         return v;
+    }
+
+    private void prepareTakingPhoto() {
+        File newProfile = Utilities.createNewProfile(getContext(), mCrime);
+        mPhotoUri = Uri.fromFile(newProfile);
+        mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
     }
 
     @Override
@@ -247,7 +250,12 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         } else if (requestCode == REQUEST_PHOTO) {
+            String filename = mPhotoUri.getPath();
+            mPhotoFile = new File(filename);
+            Log.d("REQUEST_PHOTO", filename);
+            Log.d("REQUEST_PHOTO", mPhotoFile.exists() + "");
             updatePhotoView();
+            prepareTakingPhoto();
         }
     }
 
