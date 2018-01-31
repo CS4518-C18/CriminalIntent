@@ -30,6 +30,7 @@ public class CrimeGalleryActivity extends AppCompatActivity {
 
     private Context mContext;
     private ImageAdapter imageAdapter;
+    private FaceDetector mFaceDetector;
 
     private class UpdateProfileTask extends AsyncTask<Object, Void, List<Bitmap>> {
         @Override
@@ -77,7 +78,7 @@ public class CrimeGalleryActivity extends AppCompatActivity {
 
         final List<String> profileUris = getProfileUris(this, crimeID);
 
-        final FaceDetector faceDetector = getFaceDetector(this);
+        mFaceDetector = getFaceDetector(this);
         mContext = this;
 
         final List<Bitmap> profiles = new LinkedList<>();
@@ -85,7 +86,18 @@ public class CrimeGalleryActivity extends AppCompatActivity {
         imageAdapter = new ImageAdapter(mContext, profiles);
         mGalleryGrid.setAdapter(imageAdapter);
 
-        new UpdateProfileTask().execute(profileUris, faceDetectionEnabled, faceDetector, profiles);
+        new UpdateProfileTask().execute(profileUris, faceDetectionEnabled, mFaceDetector, profiles);
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+        mFaceDetector.release();
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        if (!mFaceDetector.isOperational()) {mFaceDetector = getFaceDetector(this);}
+    }
 }

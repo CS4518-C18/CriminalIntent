@@ -120,6 +120,18 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void onStop(){
+        super.onStop();
+        mFaceDetector.release();
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        if (!mFaceDetector.isOperational()) {mFaceDetector = getFaceDetector(getContext());}
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 
