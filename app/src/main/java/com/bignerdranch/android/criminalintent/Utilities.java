@@ -15,14 +15,12 @@ import android.widget.ImageView;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import jp.wasabeef.picasso.transformations.CropSquareTransformation;
 
 /**
  * @author Yang Liu
@@ -81,16 +79,6 @@ public class Utilities {
         }
         return profileNames;
     }
-
-    static void setImage(Context context, Uri imageUri, ImageView imageView) {
-        Log.d("setImage", imageUri.toString());
-        Picasso.with(context)
-                .load(imageUri)
-                .transform(new CropSquareTransformation())
-                //.resize(300, 300)
-                .into(imageView);
-    }
-
 
     static Bitmap scaleDown(Bitmap image) {
         Bitmap newImage = scaleDown(image, 500, 500);
