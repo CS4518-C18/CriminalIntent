@@ -16,6 +16,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -34,6 +35,7 @@ import android.widget.ImageView;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -104,11 +106,6 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
@@ -125,6 +122,12 @@ public class CrimeFragment extends Fragment {
 
         CrimeLab.get(getActivity())
                 .updateCrime(mCrime);
+    }
+
+    @Override
+    public void onResume() {
+        //updatePhotoView();
+        super.onResume();
     }
 
     @Override
@@ -207,8 +210,10 @@ public class CrimeFragment extends Fragment {
         }
 
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
-        mCaptureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+        mCaptureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mCaptureImage.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        mCaptureImage.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         boolean canTakePhoto = mCaptureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
@@ -220,8 +225,9 @@ public class CrimeFragment extends Fragment {
                 startActivityForResult(mCaptureImage, REQUEST_PHOTO);
             }
         });
-
+  
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        mPhotoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         updatePhotoView();
 
         mGalleryButton = (Button) v.findViewById(R.id.display_gallery);
@@ -269,7 +275,10 @@ public class CrimeFragment extends Fragment {
         File newProfile = Utilities.createNewProfile(getContext(), mCrime);
         if (newProfile != null) {
             mPhotoUri = Uri.fromFile(newProfile);
-            mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
+            Uri externalUri = FileProvider.getUriForFile(getContext(),
+                            "com.bignerdranch.android.criminalintent.fileprovider",
+                            newProfile);
+            mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, externalUri);
         }
     }
 

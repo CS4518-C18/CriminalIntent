@@ -20,6 +20,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="face"/>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.bignerdranch.android.criminalintent.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
         <activity
             android:name=".CrimePagerActivity"
             android:label="@string/app_name"
