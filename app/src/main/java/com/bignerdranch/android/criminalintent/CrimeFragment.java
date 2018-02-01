@@ -4,16 +4,14 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -22,6 +20,7 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,22 +32,29 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
+import static com.bignerdranch.android.criminalintent.Utilities.detectFaces;
+import static com.bignerdranch.android.criminalintent.Utilities.getFaceDetector;
+import static com.bignerdranch.android.criminalintent.Utilities.scaleDown;
+import static com.bignerdranch.android.criminalintent.Utilities.updateEnableFaceDetectionPreference;
+
 public class CrimeFragment extends Fragment {
+
+    public static final String EXTRA_CRIME_ID = "xtra_crime_id";
+    public static final String EXTRA_FACE_DETECTION_ENABLED = "extra_face_detection_enabled";
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
-    public static final String EXTRA_CRIME_ID = "xtra_crime_id";
-
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
-    private static final int REQUEST_PHOTO= 2;
+    private static final int REQUEST_PHOTO = 2;
+    private static final int PROFILE_WIDTH = 300;
 
     private Crime mCrime;
     private File mPhotoFile;
@@ -60,6 +66,35 @@ public class CrimeFragment extends Fragment {
     private Button mGalleryButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Intent mCaptureImage;
+    private Uri mPhotoUri;
+    private boolean faceDetectionEnabled;
+    private FaceDetector mFaceDetector;
+
+    private class UpdateProfileTask extends AsyncTask<Object, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(Object... values) {
+
+            Uri uri = Uri.fromFile((File) values[0]);
+            Bitmap image = BitmapFactory.decodeFile(uri.getPath());
+
+            Bitmap newImage = scaleDown(image);
+
+            boolean faceDetectionEnabled = (boolean) values[1];
+
+            FaceDetector faceDetector = (FaceDetector) values[2];
+            if (faceDetectionEnabled)
+                newImage = detectFaces(faceDetector, newImage);
+
+            return scaleDown(newImage);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap newImage) {
+            mPhotoView.setImageDrawable(null);
+            mPhotoView.setImageBitmap(newImage);
+        }
+    }
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -75,7 +110,10 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+
+        mFaceDetector = getFaceDetector(getContext());
     }
 
     @Override
@@ -138,7 +176,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        mReportButton = (Button)v.findViewById(R.id.crime_report);
+        mReportButton = (Button) v.findViewById(R.id.crime_report);
         mReportButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_SEND);
@@ -154,7 +192,7 @@ public class CrimeFragment extends Fragment {
 
         final Intent pickContact = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
-        mSuspectButton = (Button)v.findViewById(R.id.crime_suspect);
+        mSuspectButton = (Button) v.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivityForResult(pickContact, REQUEST_CONTACT);
@@ -172,38 +210,22 @@ public class CrimeFragment extends Fragment {
         }
 
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
-        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        captureImage.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        captureImage.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        final boolean canTakePhoto = captureImage.resolveActivity(packageManager) != null;
+        mCaptureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mCaptureImage.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        mCaptureImage.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        boolean canTakePhoto = mCaptureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
-        if (canTakePhoto) {
-            mPhotoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    File newImage = CrimeLab.get(getActivity()).getNextPhotoFile(mCrime);
-                    if (newImage == null) {
-                        // no available space for new photos
-                        return;
-                    }
-                    // initialize photo
-                    try {
-                        newImage.getParentFile().mkdirs();
-                        newImage.createNewFile();
-                    } catch (IOException e) {
-                        return;
-                    }
-                    Uri uri = FileProvider.getUriForFile(getContext(),
-                            "com.bignerdranch.android.criminalintent.fileprovider",
-                            newImage);
-                    captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    startActivityForResult(captureImage, REQUEST_PHOTO);
-                }
-            });
-        }
+        prepareTakingPhoto();
 
+        mPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(mCaptureImage, REQUEST_PHOTO);
+            }
+        });
+  
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         mPhotoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         updatePhotoView();
@@ -212,13 +234,52 @@ public class CrimeFragment extends Fragment {
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cDir = CrimeLab.get(getActivity()).getCrimeDirectory(mCrime).toString();
                 Intent intent = new Intent(getActivity(), CrimeGalleryActivity.class);
-                intent.putExtra(EXTRA_CRIME_ID, cDir);
+                intent.putExtra(EXTRA_CRIME_ID, mCrime.getId().toString());
+                intent.putExtra(EXTRA_FACE_DETECTION_ENABLED, faceDetectionEnabled);
                 startActivity(intent);
             }
         });
+
+        CheckBox enableFaceDetectionCheckBox = (CheckBox) v.findViewById(R.id.enable_face_detection_checkbox);
+        enableFaceDetectionCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) enableFaceDetection();
+                else disableFaceDetection();
+                updateEnableFaceDetectionPreference(getContext(), faceDetectionEnabled);
+            }
+        });
+
+        SharedPreferences preferences = getContext()
+                .getSharedPreferences(getString(R.string.crime_preferences_key), Context.MODE_PRIVATE);
+
+        faceDetectionEnabled = preferences.getBoolean(getString(R.string.enable_face_detection_key), false);
+        enableFaceDetectionCheckBox.setChecked(faceDetectionEnabled);
         return v;
+    }
+
+    private void enableFaceDetection() {
+        Log.d("CrimeFragment", "enableFaceDetection");
+        faceDetectionEnabled = true;
+        updatePhotoView();
+    }
+
+    private void disableFaceDetection() {
+        Log.d("CrimeFragment", "disableFaceDetection");
+        faceDetectionEnabled = false;
+        updatePhotoView();
+    }
+
+    private void prepareTakingPhoto() {
+        File newProfile = Utilities.createNewProfile(getContext(), mCrime);
+        if (newProfile != null) {
+            mPhotoUri = Uri.fromFile(newProfile);
+            Uri externalUri = FileProvider.getUriForFile(getContext(),
+                            "com.bignerdranch.android.criminalintent.fileprovider",
+                            newProfile);
+            mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, externalUri);
+        }
     }
 
     @Override
@@ -236,7 +297,7 @@ public class CrimeFragment extends Fragment {
             Uri contactUri = data.getData();
             // Specify which fields you want your query to return
             // values for.
-            String[] queryFields = new String[] {
+            String[] queryFields = new String[]{
                     ContactsContract.Contacts.DISPLAY_NAME,
             };
             // Perform your query - the contactUri is like a "where"
@@ -262,7 +323,9 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         } else if (requestCode == REQUEST_PHOTO) {
+            mPhotoFile = new File(mPhotoUri.getPath());
             updatePhotoView();
+            prepareTakingPhoto();
         }
     }
 
@@ -285,21 +348,16 @@ public class CrimeFragment extends Fragment {
         } else {
             suspect = getString(R.string.crime_report_suspect, suspect);
         }
-        String report = getString(R.string.crime_report,
+        return getString(R.string.crime_report,
                 mCrime.getTitle(), dateString, solvedString, suspect);
-        return report;
     }
 
     private void updatePhotoView() {
+
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {
-            Picasso.with(getActivity())
-                    .load(mPhotoFile)
-                    .resize(400, 400)
-                    .centerInside()
-                    .into(mPhotoView);
-            //mPhotoView.setImageBitmap(ImageLab.getThumbnail(mPhotoFile));
+            new UpdateProfileTask().execute(mPhotoFile, faceDetectionEnabled, mFaceDetector);
         }
     }
 }

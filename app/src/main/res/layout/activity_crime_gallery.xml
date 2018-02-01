@@ -12,8 +12,7 @@
         android:layout_height="wrap_content"
         android:numColumns="4"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="0dp"
-        android:horizontalSpacing="0dp"
-        android:padding="1dp"
+        android:verticalSpacing="4dp"
+        android:horizontalSpacing="4dp"
         app:layout_constraintTop_toTopOf="parent"/>
 </android.support.constraint.ConstraintLayout>

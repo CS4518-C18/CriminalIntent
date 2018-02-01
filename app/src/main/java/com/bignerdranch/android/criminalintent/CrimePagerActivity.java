@@ -2,6 +2,7 @@ package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,12 +13,18 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Haofan Zhang
+ * @version Jan 30, 2018
+ */
 public class CrimePagerActivity extends AppCompatActivity {
     private static final String EXTRA_CRIME_ID =
             "com.bignerdranch.android.criminalintent.crime_id";
+    private static final String SAVE_CRIME_ID = "saved_crime_id";
 
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
+    private UUID crimeId;
 
     public static Intent newIntent(Context packageContext, UUID crimeId) {
         Intent intent = new Intent(packageContext, CrimePagerActivity.class);
@@ -30,8 +37,15 @@ public class CrimePagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_pager);
 
-        UUID crimeId = (UUID) getIntent()
-                .getSerializableExtra(EXTRA_CRIME_ID);
+        crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        // get id from saved if cant get from parent
+        if (crimeId == null) {
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            String saved_id = sharedPref.getString(SAVE_CRIME_ID, null);
+            if (saved_id != null) {
+                crimeId = UUID.fromString(sharedPref.getString(SAVE_CRIME_ID, null));
+            }
+        }
 
         mViewPager = (ViewPager) findViewById(R.id.activity_crime_pager_view_pager);
 
@@ -51,9 +65,10 @@ public class CrimePagerActivity extends AppCompatActivity {
             }
         });
 
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -64,7 +79,8 @@ public class CrimePagerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) { }
+            public void onPageScrollStateChanged(int state) {
+            }
         });
 
         for (int i = 0; i < mCrimes.size(); i++) {
@@ -73,5 +89,17 @@ public class CrimePagerActivity extends AppCompatActivity {
                 break;
             }
         }
+
     }
+
+    @Override
+    protected void onStop () {
+        super.onStop();
+        // save id on stop
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(SAVE_CRIME_ID, crimeId.toString());
+        editor.commit();
+    }
+
 }
