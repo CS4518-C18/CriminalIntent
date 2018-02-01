@@ -89,15 +89,4 @@ public class CrimeGalleryActivity extends AppCompatActivity {
         new UpdateProfileTask().execute(profileUris, faceDetectionEnabled, mFaceDetector, profiles);
     }
 
-    @Override
-    public void onStop(){
-        super.onStop();
-        mFaceDetector.release();
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        if (!mFaceDetector.isOperational()) {mFaceDetector = getFaceDetector(this);}
-    }
 }
